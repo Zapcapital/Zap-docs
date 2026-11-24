@@ -1,0 +1,27 @@
+# Zap Capital
+
+> Zap Capital identifies and allocates into the venues where DeFi and AI agents meet, with a defined mandate.
+
+Zap Capital is a boutique desk at the intersection of DeFi and AI agents. We believe the venues where those two meet will become the most important capital markets of the next decade. Agents will not pick a venue for its brand or its website. They will read the docs, compare cost, liquidity, speed and security, and route every trade to the best venue. We build for, and allocate to, the venues they choose.
+
+Operating principles: stables-first; clients keep their own keys; no leverage; yields are not guaranteed. DeFi and agent-driven systems involve significant risk of loss. Nothing on this site is financial advice.
+
+Contact: info@zap.capital
+Site: https://zap.capital
+
+## Company
+
+- [Zap Capital website](https://zap.capital): Company thesis, what we do, team, contact, partners and risks.
+- [Contact](mailto:info@zap.capital): To discuss the thesis or explore opportunities.
+- [Zap Capital on X](https://x.com/zap_capital)
+- [Zap Capital on LinkedIn](https://www.linkedin.com/company/146760890/)
+
+## What we do
+
+- [Products](https://zap.capital): Regulated and decentralised crypto products, including PPNs, Morpho vaults and Reserve DTFs, built to capture this growth.
+- [Zap Tech](https://zap.capital): In-house lab for AI agents that research markets, test strategies and run simulations, then are used across Zap.
+- [Consultancy](https://zap.capital): Advisory for professional clients on yield mandates, fund structures and regulatory setup.
+
+## Risks
+
+- [Risks](https://zap.capital): DeFi and agent-driven systems involve significant risk of loss. Yields are not guaranteed. Not financial advice.
