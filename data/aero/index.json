@@ -1,0 +1,38 @@
+{
+  "dataset": "zap-capital/aero-daily",
+  "schema_version": "0.2.0",
+  "publisher": "Zap Capital (https://zap.capital)",
+  "contact": "info@zap.capital",
+  "base_url": "https://docs.zap.capital/data/aero/",
+  "update_cadence": "Daily ~06:30 UTC (Base mainnet snapshot)",
+  "license": "Free to use with attribution to Zap Capital (zap.capital). Informational data only, not financial advice; may be incomplete, delayed or wrong. Aero is a third-party protocol not affiliated with Zap Capital.",
+  "terms_status": "Placeholder free-use notice pending legal review; informational only, not financial advice.",
+  "endpoints": {
+    "overview": "https://docs.zap.capital/data/aero/",
+    "latest_json": "https://docs.zap.capital/data/aero/latest.json",
+    "latest_csv": "https://docs.zap.capital/data/aero/latest.csv",
+    "schema": "https://docs.zap.capital/data/aero/schema-0.2.json",
+    "schema_alias": "https://docs.zap.capital/data/aero/schema.json",
+    "index": "https://docs.zap.capital/data/aero/index.json"
+  },
+  "latest_snapshot": {
+    "date_utc": "2026-11-25",
+    "timestamp_utc": "2026-11-25T09:34:25Z",
+    "block_number": 62044448,
+    "pools_in_file": 50,
+    "gauge_count": 321,
+    "total_allocation_power": 786344206.86,
+    "json_url": "https://docs.zap.capital/data/aero/2026-11-25.json",
+    "csv_url": "https://docs.zap.capital/data/aero/2026-11-25.csv"
+  },
+  "archives": [
+    {
+      "date_utc": "2026-11-25",
+      "json": "2026-11-25.json",
+      "csv": "2026-11-25.csv"
+    }
+  ],
+  "agent_headers_optional": {
+    "X-Zap-Agent": "Optional self-identifying string (e.g. agent-name/version) for usage analytics if edge logging is enabled."
+  }
+}
