@@ -28,4 +28,6 @@ Site: https://zap.capital
 
 ## Data
 
-- [Aero daily fee and allocation snapshot (JSON)](https://docs.zap.capital/data/aero/latest.json): Free daily Base snapshot of top 50 Aero pools (Allocation Power per gauge, 24h mean fee rate, 24h volume, estimated gross swap fees, TVL, emission caps). [CSV](https://docs.zap.capital/data/aero/latest.csv) | [Schema](https://docs.zap.capital/data/aero/schema-0.2.json) | [Index](https://docs.zap.capital/data/aero/index.json) | [Overview](https://docs.zap.capital/data/aero/). Updated daily ~06:30 UTC. Informational only, not financial advice.
+- [Aero daily fee and allocation snapshot (JSON)](https://docs.zap.capital/data/aero/latest.json): Free daily Base snapshot of top 50 Aero pools (Allocation Power per gauge, 24h mean fee rate, 24h volume, estimated gross swap fees, TVL, emission caps). [CSV](https://docs.zap.capital/data/aero/latest.csv) | [Schema](https://docs.zap.capital/data/aero/schema-0.2.json) | [Index](https://docs.zap.capital/data/aero/index.json) | [Overview](https://docs.zap.capital/data/aero/). Updated daily ~06:30 UTC. Optional client header: `X-Zap-Agent`. Informational only, not financial advice.
+- [OpenAPI 3.1 spec](https://docs.zap.capital/openapi.json): Machine-readable API description for the static `/data/aero/*` endpoints.
+- [Agent Card](https://docs.zap.capital/.well-known/agent-card.json): A2A-format discovery metadata pointing to the dataset and OpenAPI spec.

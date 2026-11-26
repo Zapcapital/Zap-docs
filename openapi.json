@@ -1,0 +1,294 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Zap Capital Aero Daily Snapshot API (Static)",
+    "version": "0.2.0",
+    "summary": "Free, unauthenticated daily snapshot of the top 50 Aero pools on Base.",
+    "description": "Read-only static JSON and CSV files published daily around 06:30 UTC by Zap Capital at https://docs.zap.capital/data/aero/. Covers the top 50 Aero pools on Base (chain_id 8453) ranked by on-chain Allocation Power (LeafVoter). No API key or authentication required. Informational data only, not financial advice.",
+    "contact": {
+      "name": "Zap Capital",
+      "url": "https://zap.capital",
+      "email": "info@zap.capital"
+    },
+    "license": {
+      "name": "Free to use with attribution to Zap Capital (zap.capital). Informational only, not financial advice."
+    }
+  },
+  "servers": [
+    {
+      "url": "https://docs.zap.capital",
+      "description": "Zap Capital static documentation & dataset host"
+    }
+  ],
+  "paths": {
+    "/data/aero/index.json": {
+      "get": {
+        "operationId": "getAeroIndex",
+        "summary": "Get dataset endpoints, latest snapshot summary, and dated archive list",
+        "parameters": [
+          { "$ref": "#/components/parameters/XZapAgent" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dataset index metadata",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/IndexResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data/aero/latest.json": {
+      "get": {
+        "operationId": "getLatestAeroSnapshotJson",
+        "summary": "Get the latest daily Base Aero top-50 pool snapshot (JSON)",
+        "parameters": [
+          { "$ref": "#/components/parameters/XZapAgent" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latest daily snapshot JSON matching schema-0.2.json",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SnapshotResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data/aero/latest.csv": {
+      "get": {
+        "operationId": "getLatestAeroSnapshotCsv",
+        "summary": "Get the latest daily Base Aero top-50 pool snapshot (CSV)",
+        "parameters": [
+          { "$ref": "#/components/parameters/XZapAgent" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Flat CSV table, one row per pool (rank 1-50)",
+            "content": {
+              "text/csv": {
+                "schema": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data/aero/schema-0.2.json": {
+      "get": {
+        "operationId": "getAeroSchema",
+        "summary": "Get the JSON Schema 2020-12 contract (0.2.0) for snapshot payloads",
+        "parameters": [
+          { "$ref": "#/components/parameters/XZapAgent" }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON Schema 2020-12 document",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data/aero/schema.json": {
+      "get": {
+        "operationId": "getAeroSchemaAlias",
+        "summary": "Alias for the current JSON Schema 2020-12 contract (schema-0.2.json)",
+        "parameters": [
+          { "$ref": "#/components/parameters/XZapAgent" }
+        ],
+        "responses": {
+          "200": {
+            "description": "JSON Schema 2020-12 document",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/data/aero/{date_utc}.json": {
+      "get": {
+        "operationId": "getDatedAeroSnapshotJson",
+        "summary": "Get a dated historical Base Aero snapshot (JSON)",
+        "parameters": [
+          { "$ref": "#/components/parameters/DateUtc" },
+          { "$ref": "#/components/parameters/XZapAgent" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dated snapshot JSON matching schema-0.2.json",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SnapshotResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Archive date not available (check /data/aero/index.json for valid dates)"
+          }
+        }
+      }
+    },
+    "/data/aero/{date_utc}.csv": {
+      "get": {
+        "operationId": "getDatedAeroSnapshotCsv",
+        "summary": "Get a dated historical Base Aero snapshot (CSV)",
+        "parameters": [
+          { "$ref": "#/components/parameters/DateUtc" },
+          { "$ref": "#/components/parameters/XZapAgent" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dated snapshot CSV",
+            "content": {
+              "text/csv": {
+                "schema": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "Archive date not available"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "DateUtc": {
+        "name": "date_utc",
+        "in": "path",
+        "required": true,
+        "description": "UTC date in YYYY-MM-DD format (available dates listed in /data/aero/index.json).",
+        "schema": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        }
+      },
+      "XZapAgent": {
+        "name": "X-Zap-Agent",
+        "in": "header",
+        "required": false,
+        "description": "Optional polite client identifier (e.g. my-agent/1.0).",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "IndexResponse": {
+        "type": "object",
+        "properties": {
+          "dataset": { "type": "string" },
+          "schema_version": { "type": "string" },
+          "publisher": { "type": "string" },
+          "contact": { "type": "string" },
+          "base_url": { "type": "string", "format": "uri" },
+          "update_cadence": { "type": "string" },
+          "license": { "type": "string" },
+          "terms_status": { "type": "string" },
+          "endpoints": { "type": "object", "additionalProperties": { "type": "string" } },
+          "latest_snapshot": { "type": "object" },
+          "archives": { "type": "array", "items": { "type": "object" } },
+          "agent_headers_optional": { "type": "object", "additionalProperties": { "type": "string" } }
+        }
+      },
+      "TokenInfo": {
+        "type": "object",
+        "required": ["address", "symbol"],
+        "properties": {
+          "address": { "type": ["string", "null"] },
+          "symbol": { "type": ["string", "null"] }
+        }
+      },
+      "PoolRecord": {
+        "type": "object",
+        "required": [
+          "rank",
+          "pool_name",
+          "pair",
+          "pool_type",
+          "fee_tier",
+          "tick_spacing",
+          "fee_pct",
+          "fee_pct_spot",
+          "pool_address",
+          "gauge_address",
+          "voting_rewards_manager",
+          "token0",
+          "token1",
+          "gauge_activated",
+          "allocation_power",
+          "allocation_power_permanent",
+          "allocation_pct",
+          "volume_24h_usd",
+          "gross_swap_fees_24h_usd_est",
+          "tvl_usd",
+          "emission_cap_aero_per_week",
+          "incentives_usd_per_week",
+          "notes"
+        ],
+        "properties": {
+          "rank": { "type": "integer", "minimum": 1 },
+          "pool_name": { "type": "string" },
+          "pair": { "type": "string" },
+          "pool_type": { "type": "string", "enum": ["cl", "volatile", "stable", "unknown"] },
+          "fee_tier": { "type": "string" },
+          "tick_spacing": { "type": ["integer", "null"] },
+          "fee_pct": { "type": ["number", "null"] },
+          "fee_pct_spot": { "type": ["number", "null"] },
+          "pool_address": { "type": ["string", "null"] },
+          "gauge_address": { "type": "string" },
+          "voting_rewards_manager": { "type": ["string", "null"] },
+          "token0": { "$ref": "#/components/schemas/TokenInfo" },
+          "token1": { "$ref": "#/components/schemas/TokenInfo" },
+          "gauge_activated": { "type": ["boolean", "null"] },
+          "allocation_power": { "type": "number" },
+          "allocation_power_permanent": { "type": ["number", "null"] },
+          "allocation_pct": { "type": ["number", "null"] },
+          "volume_24h_usd": { "type": ["number", "null"] },
+          "gross_swap_fees_24h_usd_est": { "type": ["number", "null"] },
+          "tvl_usd": { "type": ["number", "null"] },
+          "emission_cap_aero_per_week": { "type": ["number", "null"] },
+          "incentives_usd_per_week": { "type": ["number", "null"] },
+          "notes": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "SnapshotResponse": {
+        "type": "object",
+        "required": [
+          "schema_version",
+          "dataset",
+          "publisher",
+          "license",
+          "snapshot",
+          "totals",
+          "field_sources",
+          "pools",
+          "notes"
+        ],
+        "properties": {
+          "schema_version": { "type": "string" },
+          "dataset": { "type": "string" },
+          "publisher": { "type": "object" },
+          "license": { "type": "string" },
+          "snapshot": { "type": "object" },
+          "totals": { "type": "object" },
+          "field_sources": { "type": "object" },
+          "pools": { "type": "array", "items": { "$ref": "#/components/schemas/PoolRecord" } },
+          "notes": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

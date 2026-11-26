@@ -1,0 +1,49 @@
+{
+  "name": "Zap Capital Aero Data",
+  "description": "Read-only machine discovery card for Zap Capital's free daily Base Aero dataset (top 50 pools: on-chain Allocation Power, 24h mean fee rate vs spot, 24h swap volume, estimated gross swap fees, TVL, and weekly AERO emission caps). Static HTTPS endpoints described in https://docs.zap.capital/openapi.json; no API key required.",
+  "version": "0.2.0",
+  "provider": {
+    "organization": "Zap Capital",
+    "url": "https://zap.capital"
+  },
+  "documentationUrl": "https://docs.zap.capital/data/aero/",
+  "supportedInterfaces": [
+    {
+      "url": "https://docs.zap.capital/data/aero/latest.json",
+      "protocolBinding": "HTTP+JSON",
+      "protocolVersion": "1.0"
+    }
+  ],
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false
+  },
+  "defaultInputModes": [
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "application/json",
+    "text/csv"
+  ],
+  "skills": [
+    {
+      "id": "base-aero-daily-snapshot",
+      "name": "Base Aero Daily Pool & Gauge Snapshot",
+      "description": "Retrieve the daily Base Aero snapshot (JSON/CSV/Schema/Index) for top 50 pools by Allocation Power, with verified pool/gauge/voting-rewards addresses, 24h time-weighted fee_pct, volume_24h_usd, gross_swap_fees_24h_usd_est, and TVL. OpenAPI spec: https://docs.zap.capital/openapi.json.",
+      "tags": [
+        "aero",
+        "base",
+        "defi",
+        "gauges",
+        "liquidity",
+        "static-data"
+      ],
+      "examples": [
+        "GET https://docs.zap.capital/data/aero/latest.json",
+        "GET https://docs.zap.capital/data/aero/latest.csv",
+        "GET https://docs.zap.capital/data/aero/index.json",
+        "GET https://docs.zap.capital/openapi.json"
+      ]
+    }
+  ]
+}
