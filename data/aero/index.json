@@ -16,16 +16,21 @@
     "index": "https://docs.zap.capital/data/aero/index.json"
   },
   "latest_snapshot": {
-    "date_utc": "2026-11-25",
-    "timestamp_utc": "2026-11-25T09:34:25Z",
-    "block_number": 62044448,
+    "date_utc": "2026-11-26",
+    "timestamp_utc": "2026-11-26T06:42:36Z",
+    "block_number": 62424906,
     "pools_in_file": 50,
     "gauge_count": 321,
-    "total_allocation_power": 786344206.86,
-    "json_url": "https://docs.zap.capital/data/aero/2026-11-25.json",
-    "csv_url": "https://docs.zap.capital/data/aero/2026-11-25.csv"
+    "total_allocation_power": 778206039.38,
+    "json_url": "https://docs.zap.capital/data/aero/2026-11-26.json",
+    "csv_url": "https://docs.zap.capital/data/aero/2026-11-26.csv"
   },
   "archives": [
+    {
+      "date_utc": "2026-11-26",
+      "json": "2026-11-26.json",
+      "csv": "2026-11-26.csv"
+    },
     {
       "date_utc": "2026-11-25",
       "json": "2026-11-25.json",

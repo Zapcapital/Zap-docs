@@ -1,0 +1,134 @@
+# Daily refresh of the free Aero snapshot served at https://docs.zap.capital/data/aero/
+# Builds with scripts/aero/build.py (public files only), validates against data/aero/schema-0.2.json,
+# runs a leak check, then commits data/aero/ as github-actions[bot]. GitHub Pages redeploys on push.
+name: Aero daily data
+
+on:
+  schedule:
+    - cron: "30 6 * * *"   # 06:30 UTC daily (GitHub may start scheduled runs a few minutes late)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build + validate only; do not write or commit"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  issues: write
+  pages: write
+
+concurrency:
+  group: aero-daily
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install --disable-pip-version-check requests eth-abi eth-utils jsonschema
+
+      - name: Build snapshot (public files only)
+        env:
+          BASE_RPC_URL: ${{ secrets.BASE_RPC_URL }}
+          BASE_LOGS_RPC_URL: ${{ secrets.BASE_LOGS_RPC_URL }}
+          DRY_FLAG: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+        run: |
+          for attempt in 1 2 3; do
+            if python scripts/aero/build.py --public-only --out-dir data/aero $DRY_FLAG; then
+              exit 0
+            fi
+            echo "::warning::build attempt $attempt failed"
+            if [ "$attempt" -lt 3 ]; then sleep 240; fi
+          done
+          echo "::error::build failed after 3 attempts; yesterday's files stay live"
+          exit 1
+
+      - name: Validate against schema
+        run: |
+          python - <<'EOF'
+          import json, sys
+          from pathlib import Path
+          import jsonschema
+          d = Path("data/aero")
+          schema = json.loads((d / "schema-0.2.json").read_text())
+          v = jsonschema.Draft202012Validator(schema)
+          latest = json.loads((d / "latest.json").read_text())
+          day = latest["snapshot"]["date_utc"]
+          bad = 0
+          for name in ("latest.json", f"{day}.json"):
+              errs = list(v.iter_errors(json.loads((d / name).read_text())))
+              print(f"{name}: {len(errs)} schema errors")
+              bad += len(errs)
+          idx = json.loads((d / "index.json").read_text())
+          assert idx["latest_snapshot"]["date_utc"] == day, "index.json latest_snapshot out of sync"
+          assert any(a["date_utc"] == day for a in idx["archives"]), "index.json archives missing latest day"
+          sys.exit(1 if bad else 0)
+          EOF
+
+      - name: Leak check (fail on forbidden strings or internal fields)
+        run: |
+          set -e
+          fail=0
+          names='robin''hood|st''onk'   # split so this file does not match itself
+          if grep -rniE "$names" data/aero scripts/aero .github/workflows; then
+            echo "::error::forbidden name found"; fail=1
+          fi
+          if grep -nE '"[a-z_]*(apr|earned|collected_24h|pending_fees|allocator_fee)[a-z_]*"[[:space:]]*:' data/aero/*.json; then
+            echo "::error::internal field found in public JSON"; fail=1
+          fi
+          if head -n1 -q data/aero/*.csv | grep -niE 'apr|earned|collected|pending|allocator_fee'; then
+            echo "::error::internal column found in public CSV"; fail=1
+          fi
+          if grep -rnE 'aero-daily-internal|INTERNAL - do not publish' data/aero; then
+            echo "::error::internal dataset marker found"; fail=1
+          fi
+          exit $fail
+
+      - name: Commit and push
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/aero
+          if git diff --cached --quiet; then
+            echo "No changes to commit"; exit 0
+          fi
+          other=$(git status --porcelain | grep -v ' data/aero/' || true)
+          if [ -n "$other" ]; then
+            echo "::error::unexpected changes outside data/aero:"; echo "$other"; exit 1
+          fi
+          day=$(python -c 'import json;print(json.load(open("data/aero/latest.json"))["snapshot"]["date_utc"])')
+          git commit -m "Aero data ${day} (automated daily refresh)"
+          for i in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            git pull --rebase origin main
+          done
+          exit 1
+
+      - name: Request Pages build (fallback if the push did not trigger one)
+        if: ${{ success() && !(github.event_name == 'workflow_dispatch' && inputs.dry_run) }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" --silent || true
+
+      - name: Open an issue on scheduled failure
+        if: ${{ failure() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" \
+            --title "Aero daily data refresh failed ($(date -u +%F))" \
+            --body "The scheduled run failed: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}. Yesterday's files remain live. Re-run from the Actions tab (Run workflow, untick dry_run) once fixed." || true
