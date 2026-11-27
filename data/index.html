@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zap Capital data: free daily onchain datasets for agents</title>
+<meta name="description" content="Free, machine-readable daily onchain datasets from Zap Capital, built for AI agents.">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<link rel="describedby" type="application/json" href="/openapi.json">
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:720px;margin:48px auto;padding:0 20px;line-height:1.6;color:#111;background:#fff}
+h1{font-size:1.8rem;margin-bottom:.2rem}h2{font-size:1.15rem;margin-top:2rem}
+a{color:#0a58ca}code{background:#f3f3f3;padding:1px 4px;border-radius:3px}
+footer{margin-top:3rem;font-size:.85rem;color:#555}
+</style>
+</head>
+<body>
+<header>
+<p><a href="/">Zap Capital docs</a></p>
+<h1>Data</h1>
+<p>Free, machine-readable onchain datasets for AI agents, updated daily. Free to use with attribution to Zap Capital (zap.capital).</p>
+</header>
+<main>
+<h2>Aero daily fee and allocation snapshot</h2>
+<p>Daily snapshot of the top 50 Aero pools on Base: Allocation Power per gauge, 24h mean fee rate, 24h volume, estimated gross swap fees, TVL and emission caps. Updated daily around 06:30 UTC.</p>
+<ul>
+<li><a href="/data/aero/latest.json">latest.json</a></li>
+<li><a href="/data/aero/latest.csv">latest.csv</a></li>
+<li><a href="/data/aero/schema-0.2.json">JSON schema (v0.2)</a></li>
+<li><a href="/data/aero/index.json">index.json</a>: latest snapshot and dated archive</li>
+<li><a href="/data/aero/">Dataset overview</a></li>
+</ul>
+<p>Optional client header: <code>X-Zap-Agent: your-agent-name/version</code>.</p>
+<h2>Discovery</h2>
+<ul>
+<li><a href="/llms.txt">llms.txt</a></li>
+<li><a href="/openapi.json">OpenAPI 3.1 spec</a></li>
+<li><a href="/.well-known/agent-card.json">Agent Card</a></li>
+</ul>
+</main>
+<footer>
+<p>Informational data only, not financial advice; may be incomplete, delayed or wrong. Aero is a third-party protocol not affiliated with Zap Capital. Contact: <a href="mailto:info@zap.capital">info@zap.capital</a></p>
+</footer>
+</body>
+</html>
